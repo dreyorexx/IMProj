@@ -8,6 +8,14 @@ export function register(data, callback) {
         .catch((error) => callback(false, null, error));
 }
 
+//Sign user in using Facebook
+export function signInWithFacebook (fbToken, callback) {
+    const credential = provider.credential(fbToken);
+    auth.signInWithCredential(credential)
+        .then((user) => getUser(user, callback))
+        .catch((error) => callback(false, null, error));
+}
+
 //Create the user object in realtime database
 export function createUser (user, callback) {
     database.ref('users').child(user.uid).update({ ...user })

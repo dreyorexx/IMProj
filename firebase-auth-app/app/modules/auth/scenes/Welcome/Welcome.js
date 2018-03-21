@@ -5,15 +5,41 @@ import {Button, SocialIcon, Divider} from 'react-native-elements'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux';
 
-import {actions as auth} from "../../index"
-const {} = auth;
+import {actions as auth, constants as c} from "../../index"
+const { signInWithFacebook } = auth;
+
+import { Facebook } from 'expo';
 
 import styles from "./styles"
 
 class Welcome extends React.Component {
   constructor() {
-    super();
-    this.state = {}
+        super();
+        this.state = {}
+
+
+        this.onSuccess = this.onSuccess.bind(this);
+        this.onError = this.onError.bind(this);
+        this.onSignInWithFacebook = this.onSignInWithFacebook.bind(this);
+    }
+
+    //get users permission authorization (ret: facebook token)
+    async onSignInWithFacebook() {
+        const options = {permissions: ['public_profile', 'email'],}
+        const {type, token} = await Facebook.logInWithReadPermissionsAsync(c.FACEBOOK_APP_ID, options);
+
+        if (type === 'success') {
+            this.props.signInWithFacebook(token, this.onSuccess, this.onError)
+        }
+    }
+
+    onSuccess({ exists, user}) {
+        if (exists) Actions.Main()
+        else Actions.CompleteProfile({ user })
+    }
+
+    onError(error) {
+      alert(error.message);
   }
 
   render() {
@@ -52,6 +78,7 @@ class Welcome extends React.Component {
                 textStyle={styles.buttonText}
                 onPress={Actions.Register}/>
               </View>
+
               <View style={styles.bottom}>
                 <Text style={styles.bottomText}>
                   Already have an account?
@@ -71,4 +98,4 @@ class Welcome extends React.Component {
     }
 
 
-    export default connect(null, {})(Welcome);
+export default connect(null, {  signInWithFacebook })(Welcome);

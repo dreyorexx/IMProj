@@ -4,6 +4,8 @@ import { Scene, Router, ActionConst, Stack, Modal, Tabs } from 'react-native-rou
 //Splash Component
 import Splash from '../components/Splash/Splash';
 
+const firebase = require('firebase'); 
+
 //Authentication Scenes
 import Welcome from '../modules/auth/scenes/Welcome';
 import Register from '../modules/auth/scenes/Register';
